@@ -1,0 +1,26 @@
+version: "3.5"
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/app/Dockerfile
+        command: goend cassandra
+        depends_on:
+            - cassandra
+        ports:
+            - "80:80"
+        restart: always
+        healthcheck:
+            test: sh check.sh
+            start_period: 10s
+
+    cassandra:
+        image: cassandra:latest
+        ports:
+            - "9000-9999:9000-9999"
+        volumes:
+            - cassandra-data:/var/lib/cassandra
+
+volumes:
+    cassandra-data: ~
